@@ -33,6 +33,9 @@ namespace CAProject.Controllers
             }
             int userId = db.Sessions.FirstOrDefault(x => x.SessionId == sessionId).UserId;
 
+            Session user = db.Sessions.FirstOrDefault(x => x.SessionId == sessionId);
+            ViewData["User"] = user;
+
             // Stop the user from submitting an empty shopping cart
             Order exist = db.Orders.FirstOrDefault(x => x.UserId == userId && x.IsPaid == false);
             if(exist == null)
@@ -73,36 +76,5 @@ namespace CAProject.Controllers
 
             return View();
         }
-        //public IActionResult Index([FromBody]Order orders)
-        //{
-        //    int orderid = orders.Id;
-        //    bool Paid = orders.IsPaid;
-
-        //    return Json(new
-        //    {
-        //        status = "success"
-        //    });
-        //}
-
-        //function Checkout()
-        //{
-        //    let xhr = new XMLHttpRequest();
-        //    xhr.open("POST", "/Checkout/Index");
-        //    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
-
-        //    xhr.onreadystatechange = function() {
-        //        if (this.status === 200 && data.status == "success")
-        //        {
-        //            {
-        //                let data = JSON.parse(this.responseText);
-        //                console.log = ("Operation: " + data.status);
-
-
-        //            }
-        //        }
-        //        xhr.send(JSON.stringify({ Id: 3, IsPaid: true }));
-        //    }
-        //}
-
     }
 }

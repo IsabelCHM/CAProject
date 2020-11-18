@@ -6,7 +6,11 @@
     double avgScore = (double)ViewData["avgScore"];
     int stockCount = (int)ViewData["stockCount"];
     int numSold = (int)ViewData["numSold"];
+    List<double> TReviews = (List<double>)ViewData["TopReviews"];
+    Dictionary<double, Product> pRatingLookup = (Dictionary<double, Product>)ViewData["PDictionary"];
 }
+
+<link href="~/css/StarRating.css" rel="stylesheet" type="text/css" />
 
 <style>
     .div1 {
@@ -78,6 +82,48 @@
     </tr>
 </table>
 <hr style="background-color:dimgrey" />
+
+<p style="font-size: 20px"><b>You might also like</b></p>
+    <div>
+        @foreach (double rating in TReviews)
+            {
+                if (pRatingLookup[rating].Id != product.Id)
+                    {
+                    <div style="float:left; margin:10px">
+                        <div style="float:left; margin: 5px">
+                            <img src=@pRatingLookup[rating].Image width="40" height="40" />
+                        </div>
+                        <table>
+                            <tr>
+                                <td><a href="@Url.Action("Index", "ProductPg", new { productid = pRatingLookup[rating].Id })">@pRatingLookup[rating].Name</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @for (int i = 0; i < 5; i++)
+                                    {
+                                        if (rating - i >= 1)
+                                        {
+                                            <span class="fa fa-star checked"></span>
+                                        }
+                                        else if (rating - i < 1 && rating - i > 0)
+                                        {
+                                            <span class="fa fa-star-half-o checked"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="fa fa-star"></span>
+                                        }
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+            }
+    </div>
+<br />
+
+<div style="height:50px"></div>
 <p style="font-size: 20px"><b>Reviews</b></p>
 <br />
 
@@ -90,14 +136,24 @@ else
 {
     <form method="POST" action="/SubmitReviews/Index">
         <input type="hidden" name="productid" value="@product.Id" />
-        <label for="rating">Your Rating:</label>
-        <select id="rating" name="rating">
-            <option value="1">1 - Very Bad</option>
-            <option value="2">2 - Bad</option>
-            <option value="3">3 - Average</option>
-            <option selected="selected" value="4">4 - Good</option>
-            <option value="5">5 - Very Good</option>
-        </select>
+        <span for="rating">Your Rating:</span>
+
+        <div class="start-container">
+            <div class="star-widget">
+                <input type="radio" name="rating" id="rate-5" value="5">
+                <label for="rate-5" class="fa fa-star"></label>
+                <input type="radio" name="rating" id="rate-4" value="4">
+                <label for="rate-4" class="fa fa-star"></label>
+                <input type="radio" name="rating" id="rate-3" value="3">
+                <label for="rate-3" class="fa fa-star"></label>
+                <input type="radio" name="rating" id="rate-2" value="2">
+                <label for="rate-2" class="fa fa-star"></label>
+                <input type="radio" name="rating" id="rate-2" value="1">
+                <input type="radio" name="rating" id="rate-1">
+                <label for="rate-1" class="fa fa-star"></label>
+            </div>
+        </div>
+        <br />
         <br />
         <textarea id="review" name="review" rows="10" cols="60" maxlength="1000" placeholder="Your Review..."></textarea>
         <br />
@@ -105,6 +161,7 @@ else
     </form>
 }
 <br />
+
 
 @foreach (Review rev in reviews)
 {
